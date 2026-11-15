@@ -10,7 +10,7 @@ async function submitVote(name, choices) {
   if (DEMO) {
     const all = demoLoad();
     if (all.some(v => v.round === CONFIG.round && v.name.toLowerCase() === name.toLowerCase())) {
-      return { ok: false, error: `"${name}" has already voted in round ${CONFIG.round}.` };
+      return { ok: false, error: "already voted" };
     }
     all.push({ time: new Date().toISOString(), round: CONFIG.round, name, choices });
     localStorage.setItem(DEMO_KEY, JSON.stringify(all));

@@ -1,23 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="da">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Biggus Vote Results</title>
+  <title>Biggus – Resultater</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main>
-  <h1>Results</h1>
-  <p class="sub"><a href="index.html">&larr; Back to voting</a></p>
+  <h1>Resultater</h1>
+  <p class="sub"><a href="index.html">&larr; Tilbage til afstemningen</a></p>
 
   <div class="panel">
-    <label for="round">Round</label>
+    <label for="round">Runde</label>
     <select id="round" style="font:inherit;padding:6px"></select>
-    <button id="refresh" style="margin:0 0 0 10px;padding:6px 14px">Refresh</button>
+    <button id="refresh" style="margin:0 0 0 10px;padding:6px 14px">Opdater</button>
   </div>
 
-  <div id="out">Loading...</div>
+  <div id="out">Indlæser...</div>
 </main>
 
 <script src="config.js"></script>
@@ -25,14 +25,14 @@
 <script>
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  for (let r = 1; r <= CONFIG.round; r++) $("round").add(new Option(`Round ${r}`, r, r === CONFIG.round, r === CONFIG.round));
+  for (let r = 1; r <= CONFIG.round; r++) $("round").add(new Option(`Runde ${r}`, r, r === CONFIG.round, r === CONFIG.round));
 
   async function load() {
     const round = Number($("round").value);
-    $("out").textContent = "Loading...";
+    $("out").textContent = "Indlæser...";
     let votes;
     try { votes = await getVotes(round); }
-    catch { $("out").innerHTML = `<p class="msg err">Couldn't load votes.</p>`; return; }
+    catch { $("out").innerHTML = `<p class="msg err">Kunne ikke hente stemmer.</p>`; return; }
 
     // Tally. Designs that got votes but aren't in the current config (older round) still appear.
     const nameOf = Object.fromEntries(CONFIG.designs.map(d => [d.id, d.name]));
@@ -45,9 +45,9 @@
     const leaders = rows.filter(r => r[1].length === top && top > 0).map(r => nameOf[r[0]] || r[0]);
 
     let banner = "";
-    if (!votes.length) banner = `<div class="banner warn">No votes yet in round ${round}.</div>`;
-    else if (leaders.length > 1) banner = `<div class="banner tie"><b>Tie at the top</b> (${top} votes each): ${leaders.map(esc).join(", ")}. A tie-breaker round is needed with these designs.</div>`;
-    else banner = `<div class="banner win"><b>Leading:</b> ${esc(leaders[0])} with ${top} votes.</div>`;
+    if (!votes.length) banner = `<div class="banner warn">Ingen stemmer endnu i runde ${round}.</div>`;
+    else if (leaders.length > 1) banner = `<div class="banner tie"><b>Stemmelighed i toppen</b> (${top} ${top === 1 ? "stemme" : "stemmer"} hver): ${leaders.map(esc).join(", ")}. Der skal en omafstemning til mellem disse designs.</div>`;
+    else banner = `<div class="banner win"><b>Fører:</b> ${esc(leaders[0])} med ${top} ${top === 1 ? "stemme" : "stemmer"}.</div>`;
 
     // Flag names that look like the same person (same name, different case or spacing).
     const seen = {};
@@ -56,20 +56,20 @@
 
     const max = Math.max(1, top);
     $("out").innerHTML = banner + `
-      <p class="sub">${votes.length} member${votes.length === 1 ? "" : "s"} voted.</p>
+      <p class="sub">${votes.length} ${votes.length === 1 ? "medlem" : "medlemmer"} har stemt.</p>
       <table>
-        <tr><th>Design</th><th>Votes</th><th>Voters</th></tr>
+        <tr><th>Design</th><th>Stemmer</th><th>Hvem</th></tr>
         ${rows.map(([id, names]) => `<tr>
           <td>${esc(nameOf[id] || id)}</td>
           <td>${names.length}<div class="bar" style="width:${(names.length / max) * 100}%"></div></td>
           <td class="names">${names.map(n => `<span class="${isDup(n) ? "dup" : ""}">${esc(n)}</span>`).join(", ") || "-"}</td>
         </tr>`).join("")}
       </table>
-      <h2>Vote log</h2>
+      <h2>Stemmelog</h2>
       <table>
-        <tr><th>Time</th><th>Name</th><th>Picked</th></tr>
+        <tr><th>Tidspunkt</th><th>Navn</th><th>Valgt</th></tr>
         ${votes.map(v => `<tr>
-          <td class="names">${esc(new Date(v.time).toLocaleString())}</td>
+          <td class="names">${esc(new Date(v.time).toLocaleString("da-DK"))}</td>
           <td class="${isDup(v.name) ? "dup" : ""}">${esc(v.name)}</td>
           <td>${v.choices.map(c => esc(nameOf[c] || c)).join(", ")}</td>
         </tr>`).join("")}
