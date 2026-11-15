@@ -32,6 +32,8 @@ const CONFIG = {
       desc: "To ølkrus, der skåler, på kongeblåt. Ingen tvivl om, hvordan raidet bliver fejret bagefter." },
     { id: "glade",    name: "Glade",    image: "images/glade.png",
       desc: "Dybe kløemærker på hvidt, som om noget meget stort lige har været forbi. Enkelt, råt og lidt uhyggeligt." },
+    { id: "kleist",   name: "Kleist",   image: "images/kleist.webp",
+      desc: "En hummer med kløerne klar. Langsom? Måske. Men når den først har fat, giver den aldrig slip." },
     { id: "mowgli",   name: "Mowgli",   image: "images/mowgli.jpg",
       desc: "Lyn og ild i mørket. For dem, der hellere vil være stormen end vente på den." },
     { id: "muliens",  name: "Muliens",  image: "images/muliens.png",
