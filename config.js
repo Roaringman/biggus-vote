@@ -5,7 +5,7 @@
 const CONFIG = {
   // Paste your Google Apps Script web app URL here (see README.md).
   // Leave empty to run in local "demo mode" (votes saved only in your browser).
-  scriptUrl: "",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbwJDvqh15rlh9Aq-Nc6ajNVxzJYKRWDiPj-peFzYEFxWQ12ANiCibKbDdoivROwuftx/exec",
 
   // Which round is running. Votes are stored per round, so round 2
   // starts with a clean count automatically.
