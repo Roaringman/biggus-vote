@@ -75,6 +75,21 @@ th { color: var(--gold); }
 .bar { height: 8px; background: var(--gold); border-radius: 4px; margin-top: 4px; }
 .names { color: var(--muted); font-size: .9rem; }
 .dup { color: var(--bad); font-weight: bold; }
+.winner {
+  text-align: center;
+  background: var(--panel);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  padding: 24px 16px 28px;
+  margin: 16px 0 24px;
+  box-shadow: 0 0 40px rgba(232, 194, 106, .2);
+}
+.winner .confetti { font-size: 2rem; }
+.winner h2 { font-size: 2.2rem; margin: 8px 0 16px; }
+.winner img { width: 100%; max-width: 420px; border-radius: 6px; border: 1px solid var(--edge); }
+.winner .lead { font-size: 1.2rem; font-weight: bold; color: var(--gold); margin: 16px 0 4px; }
+.winner .desc { color: var(--muted); font-style: italic; }
+.winner p { max-width: 560px; margin-left: auto; margin-right: auto; }
 .lightbox {
   position: fixed; inset: 0; background: rgba(0,0,0,.85);
   display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10;

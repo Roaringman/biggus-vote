@@ -9,6 +9,8 @@
 <body>
 <main>
   <h1>Biggus Tabard-afstemning</h1>
+  <div id="winner" class="winner" hidden></div>
+  <div id="voting">
   <p class="sub" id="sub"></p>
   <div id="banner"></div>
 
@@ -21,6 +23,7 @@
 
   <button id="submit" disabled>Afgiv stemme</button>
   <div class="msg" id="msg"></div>
+  </div>
 
   <p style="margin-top:32px"><a href="results.html">Se resultater og hvem der har stemt &rarr;</a></p>
 </main>
@@ -92,6 +95,26 @@
   $("name").oninput = render;
   render();
   tick();
+
+  // Winner announcement: replaces the voting form once CONFIG.winner is set.
+  const won = CONFIG.winner && CONFIG.designs.find(d => d.id === CONFIG.winner);
+  if (won) {
+    $("voting").hidden = true;
+    $("winner").hidden = false;
+    $("winner").innerHTML = `
+      <div class="confetti">🎉 🛡️ 🎉</div>
+      <h2>Tillykke, ${won.name}!</h2>
+      <img src="${won.image}" alt="${won.name}s tabard-design">
+      <p class="lead">${won.name}s design har vundet afstemningen og bliver Biggus' nye tabard!</p>
+      <p id="score"></p>
+      <p class="desc">»${won.desc}«</p>
+      <p>Kløemærkerne skal nu bæres med stolthed i hver dungeon, hvert raid og på hver eneste kro i Azeroth.
+         Tak til alle, der stemte, og et stort skulderklap til alle, der indsendte et design.</p>`;
+    getVotes(CONFIG.round).then(votes => {
+      const n = votes.filter(v => v.choices.includes(won.id)).length;
+      if (votes.length) $("score").innerHTML = `<b>${n} af ${votes.length} medlemmer</b> stemte på designet.`;
+    }).catch(() => {});
+  }
 
   // The server script replies in English; show Danish instead.
   function danishError(err, name) {

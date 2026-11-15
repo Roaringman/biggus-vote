@@ -16,7 +16,11 @@ const CONFIG = {
   votesPerPerson: 2,
 
   // Set to false to close voting (the results page keeps working).
-  open: true,
+  open: false,
+
+  // Set to a design id to close the vote and show the winner on the front page.
+  // Use "" while voting is still running.
+  winner: "glade",
 
   // Voting unlocks at this time (shows a countdown until then).
   // +01:00 = Danish winter time, +02:00 = Danish summer time. Use "" to open immediately.
