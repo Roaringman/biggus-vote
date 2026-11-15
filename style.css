@@ -53,6 +53,7 @@ input[type=text] {
 .card.picked { border-color: var(--pick); box-shadow: 0 0 0 3px var(--pick) inset; }
 .card img { width: 100%; aspect-ratio: 3 / 4; object-fit: contain; background: #0f0c08; border-radius: 4px; }
 .card .name { margin-top: 8px; font-weight: bold; }
+.card .desc { color: var(--muted); font-style: italic; font-size: .9rem; margin: 4px 0 6px; line-height: 1.35; }
 .card .tag { color: var(--pick); font-size: .9rem; min-height: 1.4em; }
 button {
   font: inherit; font-weight: bold;

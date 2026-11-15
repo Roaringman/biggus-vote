@@ -24,11 +24,17 @@ const CONFIG = {
 
   // Designs in this round. Put the screenshots in the images/ folder.
   // For a tie-breaker round, keep only the tied designs in this list.
+  // "desc" is optional flavor text shown under the name.
   designs: [
-    { id: "darklord", name: "Darklord", image: "images/darklord.jpg" },
-    { id: "glade",    name: "Glade",    image: "images/glade.png" },
-    { id: "mowgli",   name: "Mowgli",   image: "images/mowgli.jpg" },
-    { id: "muliens",  name: "Muliens",  image: "images/muliens.png" },
-    { id: "thaco",    name: "Thaco",    image: "images/thaco.png" },
+    { id: "darklord", name: "Darklord", image: "images/darklord.jpg",
+      desc: "Et grinende dæmonkranie på sort baggrund. Fjenden skal ryste, før kampen overhovedet er begyndt." },
+    { id: "glade",    name: "Glade",    image: "images/glade.png",
+      desc: "Dybe kløemærker på hvidt, som om noget meget stort lige har været forbi. Enkelt, råt og lidt uhyggeligt." },
+    { id: "mowgli",   name: "Mowgli",   image: "images/mowgli.jpg",
+      desc: "Lyn og ild i mørket. For dem, der hellere vil være stormen end vente på den." },
+    { id: "muliens",  name: "Muliens",  image: "images/muliens.png",
+      desc: "Et uendelighedstegn på rent hvidt. Biggus, for evigt." },
+    { id: "thaco",    name: "Thaco",    image: "images/thaco.png",
+      desc: "Knaldpink og helt uden skam. De ser dig komme på lang afstand, og de glemmer det aldrig." },
   ],
 };

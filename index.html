@@ -61,6 +61,7 @@
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `<img src="${d.image}" alt="${d.name}"><div class="name">${d.name}</div>
+      ${d.desc ? `<div class="desc">${d.desc}</div>` : ""}
       <span class="zoom">forstør</span><div class="tag"></div>`;
     card.querySelector(".zoom").onclick = e => {
       e.stopPropagation();
