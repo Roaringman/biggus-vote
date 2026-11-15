@@ -18,6 +18,10 @@ const CONFIG = {
   // Set to false to close voting (the results page keeps working).
   open: true,
 
+  // Voting unlocks at this time (shows a countdown until then).
+  // +01:00 = Danish winter time, +02:00 = Danish summer time. Use "" to open immediately.
+  opensAt: "2026-11-15T21:00:00+01:00",
+
   // Designs in this round. Put the screenshots in the images/ folder.
   // For a tie-breaker round, keep only the tied designs in this list.
   designs: [

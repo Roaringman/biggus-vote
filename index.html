@@ -38,6 +38,21 @@
   if (DEMO) $("banner").innerHTML = `<div class="banner warn">Demo mode: no scriptUrl set in config.js, so votes are saved only in this browser.</div>`;
   if (!CONFIG.open) $("banner").innerHTML += `<div class="banner warn">Voting for round ${CONFIG.round} is closed.</div>`;
 
+  // Countdown until voting opens.
+  const opensAt = CONFIG.opensAt ? new Date(CONFIG.opensAt).getTime() : 0;
+  const notYet = () => Date.now() < opensAt;
+  const countdown = document.createElement("div");
+  $("banner").appendChild(countdown);
+  function tick() {
+    if (!notYet()) { countdown.remove(); render(); return; }
+    let s = Math.floor((opensAt - Date.now()) / 1000);
+    const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); s %= 60;
+    const when = new Date(opensAt).toLocaleString("en-GB", { timeZone: "Europe/Copenhagen", weekday: "long", hour: "2-digit", minute: "2-digit" });
+    countdown.className = "banner warn";
+    countdown.innerHTML = `Voting opens ${when} (Danish time) &mdash; in <b>${h}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s</b>. Have a look at the designs meanwhile!`;
+    setTimeout(tick, 1000);
+  }
+
   for (const d of CONFIG.designs) {
     const card = document.createElement("div");
     card.className = "card";
@@ -66,11 +81,12 @@
       card.querySelector(".tag").textContent = on ? "✔ Selected" : "";
     }
     const name = $("name").value.trim();
-    $("submit").disabled = !CONFIG.open || !name || picked.size !== max;
-    $("submit").textContent = picked.size === max ? "Cast vote" : `Pick ${max - picked.size} more`;
+    $("submit").disabled = !CONFIG.open || notYet() || !name || picked.size !== max;
+    $("submit").textContent = notYet() ? "Voting not open yet" : picked.size === max ? "Cast vote" : `Pick ${max - picked.size} more`;
   }
   $("name").oninput = render;
   render();
+  tick();
 
   $("submit").onclick = async () => {
     const name = $("name").value.trim();
