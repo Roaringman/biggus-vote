@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biggus Tabard Vote</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <h1>Biggus Tabard Vote</h1>
+  <p class="sub" id="sub"></p>
+  <div id="banner"></div>
+
+  <div class="panel">
+    <label for="name">Your character name</label>
+    <input type="text" id="name" maxlength="40" autocomplete="off" placeholder="e.g. Grommash">
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <button id="submit" disabled>Cast vote</button>
+  <div class="msg" id="msg"></div>
+
+  <p style="margin-top:32px"><a href="results.html">See results and who voted &rarr;</a></p>
+</main>
+
+<div class="lightbox" id="lightbox"><img alt=""></div>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script>
+  const max = CONFIG.votesPerPerson;
+  const picked = new Set();
+  const $ = id => document.getElementById(id);
+
+  $("sub").textContent = `Round ${CONFIG.round} · pick ${max} design${max > 1 ? "s" : ""}. One vote per member, and every vote is logged by name.`;
+  if (DEMO) $("banner").innerHTML = `<div class="banner warn">Demo mode: no scriptUrl set in config.js, so votes are saved only in this browser.</div>`;
+  if (!CONFIG.open) $("banner").innerHTML += `<div class="banner warn">Voting for round ${CONFIG.round} is closed.</div>`;
+
+  for (const d of CONFIG.designs) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<img src="${d.image}" alt="${d.name}"><div class="name">${d.name}</div>
+      <span class="zoom">enlarge</span><div class="tag"></div>`;
+    card.querySelector(".zoom").onclick = e => {
+      e.stopPropagation();
+      $("lightbox").querySelector("img").src = d.image;
+      $("lightbox").classList.add("show");
+    };
+    card.onclick = () => {
+      if (picked.has(d.id)) picked.delete(d.id);
+      else if (picked.size < max) picked.add(d.id);
+      else if (max === 1) { picked.clear(); picked.add(d.id); }
+      render();
+    };
+    card.dataset.id = d.id;
+    $("grid").appendChild(card);
+  }
+  $("lightbox").onclick = () => $("lightbox").classList.remove("show");
+
+  function render() {
+    for (const card of $("grid").children) {
+      const on = picked.has(card.dataset.id);
+      card.classList.toggle("picked", on);
+      card.querySelector(".tag").textContent = on ? "✔ Selected" : "";
+    }
+    const name = $("name").value.trim();
+    $("submit").disabled = !CONFIG.open || !name || picked.size !== max;
+    $("submit").textContent = picked.size === max ? "Cast vote" : `Pick ${max - picked.size} more`;
+  }
+  $("name").oninput = render;
+  render();
+
+  $("submit").onclick = async () => {
+    const name = $("name").value.trim();
+    const choices = CONFIG.designs.filter(d => picked.has(d.id)).map(d => d.id);
+    const names = CONFIG.designs.filter(d => picked.has(d.id)).map(d => d.name).join(" and ");
+    if (!confirm(`Vote as "${name}" for ${names}?\nYou can't change it afterwards.`)) return;
+    $("submit").disabled = true;
+    $("msg").className = "msg";
+    $("msg").textContent = "Sending...";
+    try {
+      const r = await submitVote(name, choices);
+      if (r.ok) {
+        $("msg").className = "msg ok";
+        $("msg").textContent = `Thanks ${name}, your vote for ${names} is in.`;
+        picked.clear(); render(); $("submit").disabled = true;
+      } else {
+        $("msg").className = "msg err";
+        $("msg").textContent = r.error || "Something went wrong.";
+        render();
+      }
+    } catch (e) {
+      $("msg").className = "msg err";
+      $("msg").textContent = "Couldn't reach the vote server. Try again in a moment.";
+      render();
+    }
+  };
+</script>
+</body>
+</html>

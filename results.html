@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biggus Vote Results</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <h1>Results</h1>
+  <p class="sub"><a href="index.html">&larr; Back to voting</a></p>
+
+  <div class="panel">
+    <label for="round">Round</label>
+    <select id="round" style="font:inherit;padding:6px"></select>
+    <button id="refresh" style="margin:0 0 0 10px;padding:6px 14px">Refresh</button>
+  </div>
+
+  <div id="out">Loading...</div>
+</main>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  for (let r = 1; r <= CONFIG.round; r++) $("round").add(new Option(`Round ${r}`, r, r === CONFIG.round, r === CONFIG.round));
+
+  async function load() {
+    const round = Number($("round").value);
+    $("out").textContent = "Loading...";
+    let votes;
+    try { votes = await getVotes(round); }
+    catch { $("out").innerHTML = `<p class="msg err">Couldn't load votes.</p>`; return; }
+
+    // Tally. Designs that got votes but aren't in the current config (older round) still appear.
+    const nameOf = Object.fromEntries(CONFIG.designs.map(d => [d.id, d.name]));
+    const tally = {};
+    if (round === CONFIG.round) for (const d of CONFIG.designs) tally[d.id] = [];
+    for (const v of votes) for (const c of v.choices) (tally[c] ||= []).push(v.name);
+
+    const rows = Object.entries(tally).sort((a, b) => b[1].length - a[1].length);
+    const top = rows.length ? rows[0][1].length : 0;
+    const leaders = rows.filter(r => r[1].length === top && top > 0).map(r => nameOf[r[0]] || r[0]);
+
+    let banner = "";
+    if (!votes.length) banner = `<div class="banner warn">No votes yet in round ${round}.</div>`;
+    else if (leaders.length > 1) banner = `<div class="banner tie"><b>Tie at the top</b> (${top} votes each): ${leaders.map(esc).join(", ")}. A tie-breaker round is needed with these designs.</div>`;
+    else banner = `<div class="banner win"><b>Leading:</b> ${esc(leaders[0])} with ${top} votes.</div>`;
+
+    // Flag names that look like the same person (same name, different case or spacing).
+    const seen = {};
+    for (const v of votes) { const k = v.name.toLowerCase().replace(/\s+/g, ""); seen[k] = (seen[k] || 0) + 1; }
+    const isDup = n => seen[n.toLowerCase().replace(/\s+/g, "")] > 1;
+
+    const max = Math.max(1, top);
+    $("out").innerHTML = banner + `
+      <p class="sub">${votes.length} member${votes.length === 1 ? "" : "s"} voted.</p>
+      <table>
+        <tr><th>Design</th><th>Votes</th><th>Voters</th></tr>
+        ${rows.map(([id, names]) => `<tr>
+          <td>${esc(nameOf[id] || id)}</td>
+          <td>${names.length}<div class="bar" style="width:${(names.length / max) * 100}%"></div></td>
+          <td class="names">${names.map(n => `<span class="${isDup(n) ? "dup" : ""}">${esc(n)}</span>`).join(", ") || "-"}</td>
+        </tr>`).join("")}
+      </table>
+      <h2>Vote log</h2>
+      <table>
+        <tr><th>Time</th><th>Name</th><th>Picked</th></tr>
+        ${votes.map(v => `<tr>
+          <td class="names">${esc(new Date(v.time).toLocaleString())}</td>
+          <td class="${isDup(v.name) ? "dup" : ""}">${esc(v.name)}</td>
+          <td>${v.choices.map(c => esc(nameOf[c] || c)).join(", ")}</td>
+        </tr>`).join("")}
+      </table>`;
+  }
+  $("round").onchange = load;
+  $("refresh").onclick = load;
+  load();
+</script>
+</body>
+</html>
