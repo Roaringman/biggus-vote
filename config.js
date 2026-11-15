@@ -28,6 +28,8 @@ const CONFIG = {
   designs: [
     { id: "darklord", name: "Darklord", image: "images/darklord.jpg",
       desc: "Et grinende dæmonkranie på sort baggrund. Fjenden skal ryste, før kampen overhovedet er begyndt." },
+    { id: "dinho",    name: "Dinho",    image: "images/dinho.jpg",
+      desc: "To ølkrus, der skåler, på kongeblåt. Ingen tvivl om, hvordan raidet bliver fejret bagefter." },
     { id: "glade",    name: "Glade",    image: "images/glade.png",
       desc: "Dybe kløemærker på hvidt, som om noget meget stort lige har været forbi. Enkelt, råt og lidt uhyggeligt." },
     { id: "mowgli",   name: "Mowgli",   image: "images/mowgli.jpg",
