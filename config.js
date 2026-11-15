@@ -36,6 +36,8 @@ const CONFIG = {
       desc: "Lyn og ild i mørket. For dem, der hellere vil være stormen end vente på den." },
     { id: "muliens",  name: "Muliens",  image: "images/muliens.png",
       desc: "Et uendelighedstegn på rent hvidt. Biggus, for evigt." },
+    { id: "pelle",    name: "Pelle",    image: "images/pelle.jpg",
+      desc: "En knoglet brystkasse på sort. Det eneste, der er tilbage af dem, der udfordrede Biggus." },
     { id: "thaco",    name: "Thaco",    image: "images/thaco.png",
       desc: "Knaldpink og helt uden skam. De ser dig komme på lang afstand, og de glemmer det aldrig." },
   ],
