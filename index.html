@@ -34,7 +34,9 @@
   const picked = new Set();
   const $ = id => document.getElementById(id);
 
-  $("sub").textContent = `Runde ${CONFIG.round} · vælg ${max} ${max > 1 ? "designs" : "design"}. Én stemme pr. medlem, og alle stemmer logges med navn.`;
+  $("sub").innerHTML = max > 1
+    ? `<b>Runde ${CONFIG.round}: Du har ${max} stemmer.</b> Vælg de ${max} designs, du bedst kan lide. Du kan kun afgive dine stemmer én gang, og alle stemmer logges med navn.`
+    : `<b>Runde ${CONFIG.round}: Du har 1 stemme.</b> Vælg det design, du bedst kan lide. Du kan kun stemme én gang, og alle stemmer logges med navn.`;
   if (DEMO) $("banner").innerHTML = `<div class="banner warn">Demotilstand: ingen scriptUrl i config.js, så stemmer gemmes kun i denne browser.</div>`;
   if (!CONFIG.open) $("banner").innerHTML += `<div class="banner warn">Afstemningen for runde ${CONFIG.round} er lukket.</div>`;
 
@@ -84,7 +86,7 @@
     }
     const name = $("name").value.trim();
     $("submit").disabled = !CONFIG.open || notYet() || !name || picked.size !== max;
-    $("submit").textContent = notYet() ? "Afstemningen er ikke åben endnu" : picked.size === max ? "Afgiv stemme" : `Vælg ${max - picked.size} mere`;
+    $("submit").textContent = notYet() ? "Afstemningen er ikke åben endnu" : picked.size === max ? (max > 1 ? "Afgiv stemmer" : "Afgiv stemme") : `Vælg ${max - picked.size} ${max - picked.size > 1 ? "designs" : "design"} mere`;
   }
   $("name").oninput = render;
   render();
@@ -111,7 +113,7 @@
       const r = await submitVote(name, choices);
       if (r.ok) {
         $("msg").className = "msg ok";
-        $("msg").textContent = `Tak ${name}, din stemme på ${names} er registreret.`;
+        $("msg").textContent = `Tak ${name}, ${max > 1 ? "dine stemmer" : "din stemme"} på ${names} er registreret.`;
         picked.clear(); render(); $("submit").disabled = true;
       } else {
         $("msg").className = "msg err";
