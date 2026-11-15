@@ -25,9 +25,10 @@ const CONFIG = {
   // Designs in this round. Put the screenshots in the images/ folder.
   // For a tie-breaker round, keep only the tied designs in this list.
   designs: [
-    { id: "A", name: "Design A", image: "images/design-a.svg" },
-    { id: "B", name: "Design B", image: "images/design-b.svg" },
-    { id: "C", name: "Design C", image: "images/design-c.svg" },
-    { id: "D", name: "Design D", image: "images/design-d.svg" },
+    { id: "darklord", name: "Darklord", image: "images/darklord.jpg" },
+    { id: "glade",    name: "Glade",    image: "images/glade.png" },
+    { id: "mowgli",   name: "Mowgli",   image: "images/mowgli.jpg" },
+    { id: "muliens",  name: "Muliens",  image: "images/muliens.png" },
+    { id: "thaco",    name: "Thaco",    image: "images/thaco.png" },
   ],
 };
